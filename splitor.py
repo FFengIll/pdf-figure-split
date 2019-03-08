@@ -94,17 +94,16 @@ def split(path, template, config, output='output/'):
 
             (name, caption) = item
             path = '{}/{}.pdf'.format(output, name)
-
-            print(template % (path, name, caption))
+            
             print('-'*10)
+            print(template % (path, name, caption))
 
-            writer = PdfFileWriter()
             page = reader.getPage(i)
-
+            
+            writer = PdfFileWriter()
             writer.addPage(page)
             with open('{}'.format(path), 'wb') as figure:
                 writer.write(figure)
-
 
 def main():
     sys.argv.append('testcase.pdf')
@@ -113,7 +112,7 @@ def main():
     args = parser.parse_args()
     print(args)
 
-    input = args.file[0]
+    pdf = args.file[0]
     template = args.template
     config = args.config
     output = args.output
@@ -121,7 +120,7 @@ def main():
     config = load_config(config)
     template = load_template(template)
 
-    split(input, template, config)
+    split(pdf, template, config)
 
 
 if __name__ == "__main__":
