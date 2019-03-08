@@ -11,3 +11,12 @@
 - 自动拆分pdf，并输出
   - 每一张图一个pdf文件，文件名为ref
   - 输出所有的对应latex语句（template.tex）中可以修改
+
+# 使用
+- python3 -m pip install PyPDF2
+- python3 splitor.py -t figure.tex -c figure.csv testcase.pdf
+- python3 splitor.py -t table.tex -c table.csv testcase.pdf
+  - 请选用需要分割的pdf文件
+  - 如需要，请对应修改tex模板
+  - 请对应pdf，填写csv文件（直接文本编辑，或在excel中编辑皆可）
+  - 因为实际使用时，图表是分开的，所以分为了两套

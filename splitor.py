@@ -20,11 +20,10 @@ def get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", help="output folder", action="store",
                         default='./output/', type=str, dest="output")
-
     parser.add_argument("-t", "--template", help="",
-                        action="store", default='template.tex', dest="template")
+                        action="store", default='figure.tex', dest="template")
     parser.add_argument("-c", help="config file", action="store",
-                        default='config.csv', type=str, dest="config")
+                        default='figure.csv', type=str, dest="config")
     parser.add_argument(nargs=argparse.REMAINDER, dest="file")
     return parser
 
