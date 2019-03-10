@@ -19,7 +19,7 @@ logging.getLogger().setLevel(logging.INFO)
 def get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", help="output folder", action="store",
-                        default='./output/', type=str, dest="output")
+                        default='./output/figure', type=str, dest="output")
     parser.add_argument("-t", "--template", help="",
                         action="store", default='figure.tex', dest="template")
     parser.add_argument("-c", help="config file", action="store",
@@ -71,7 +71,7 @@ def load_config(path):
     # return config
 
 
-def split(path, template, config, output='output/'):
+def split(path, template, config, output='split'):
     """
     split pdf file, and output multiple new pdf files.
     """
@@ -85,7 +85,7 @@ def split(path, template, config, output='output/'):
         os.makedirs(output)
 
     pages = []
-    with open(path, 'rb') as pdf:
+    with open(path, 'rb') as pdf, open('log.txt'.format(output),'w',encoding='utf-8') as log:
         reader = PdfFileReader(pdf)
 
         for i, item in zip(range(reader.getNumPages()), config):
@@ -96,7 +96,9 @@ def split(path, template, config, output='output/'):
             path = '{}/{}.pdf'.format(output, name)
             
             print('-'*10)
-            print(template % (path, name, caption))
+            statements = template.format(path=path, label=name, caption=caption)
+            print(statements)
+            log.write(statements+'\n\n')
 
             page = reader.getPage(i)
             
@@ -120,7 +122,7 @@ def main():
     config = load_config(config)
     template = load_template(template)
 
-    split(pdf, template, config)
+    split(pdf, template, config, output)
 
 
 if __name__ == "__main__":
