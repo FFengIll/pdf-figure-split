@@ -24,6 +24,8 @@ def get_parser():
                         action="store", default='figure.tex', dest="template")
     parser.add_argument("-c", help="config file", action="store",
                         default='figure.csv', type=str, dest="config")
+    parser.add_argument("--only", help="log and print only", action="store_true",
+                        default=False, dest="only")
     parser.add_argument(nargs=argparse.REMAINDER, dest="file")
     return parser
 
@@ -38,10 +40,10 @@ def load_template(path):
 
 def load_config(path):
     config = []
-    with open(path, 'r',encoding='utf-8') as csvfile:
+    with open(path, 'r', encoding='utf-8') as csvfile:
         data = csv.reader(csvfile, delimiter=',', quotechar='\'')
         for row in data:
-            if row[0] =='':
+            if row[0] == '':
                 config.append(None)
             else:
                 config.append(row)
@@ -71,7 +73,7 @@ def load_config(path):
     # return config
 
 
-def split(path, template, config, output='split'):
+def split(path, template, config, output='split', no_pdf=False):
     """
     split pdf file, and output multiple new pdf files.
     """
@@ -85,7 +87,7 @@ def split(path, template, config, output='split'):
         os.makedirs(output)
 
     pages = []
-    with open(path, 'rb') as pdf, open('log.txt'.format(output),'w',encoding='utf-8') as log:
+    with open(path, 'rb') as pdf, open('log.txt'.format(output), 'w', encoding='utf-8') as log:
         reader = PdfFileReader(pdf)
 
         for i, item in zip(range(reader.getNumPages()), config):
@@ -94,18 +96,21 @@ def split(path, template, config, output='split'):
 
             (name, caption) = item
             path = '{}/{}.pdf'.format(output, name)
-            
+
             print('-'*10)
-            statements = template.format(path=path, label=name, caption=caption)
+            statements = template.format(
+                path=path, label=name, caption=caption)
             print(statements)
             log.write(statements+'\n\n')
 
             page = reader.getPage(i)
-            
-            writer = PdfFileWriter()
-            writer.addPage(page)
-            with open('{}'.format(path), 'wb') as figure:
-                writer.write(figure)
+
+            if not no_pdf:
+                writer = PdfFileWriter()
+                writer.addPage(page)
+                with open('{}'.format(path), 'wb') as figure:
+                    writer.write(figure)
+
 
 def main():
     sys.argv.append('testcase.pdf')
@@ -122,7 +127,7 @@ def main():
     config = load_config(config)
     template = load_template(template)
 
-    split(pdf, template, config, output)
+    split(pdf, template, config, output, no_pdf=args.only)
 
 
 if __name__ == "__main__":
